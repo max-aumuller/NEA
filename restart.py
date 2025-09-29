@@ -43,6 +43,8 @@ class Player(pygame.sprite.Sprite):
         self.ySpeed *= 0.98
         self.rect.x = self.xPos
         self.rect.y = self.yPos
+    def rotate(self,angle):
+        self.rect = pygame.transform.rotate(self.rect, angle)
 
 
 pygame.init()
@@ -71,9 +73,9 @@ while not done:
         player1.ySpeed += 0.2  # Gradually increase speed
 
     if keys[pygame.K_LEFT]: # rotate left
-        player1.xSpeed -= 0.2
+        player1.rotate(30)
     if keys[pygame.K_RIGHT]: # rotate right
-        player1.xSpeed += 0.2
+        player1.rotate(-30)
 
     # Spawn asteroids
     if len(asteroids) < 4:
