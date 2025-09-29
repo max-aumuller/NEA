@@ -102,6 +102,11 @@ while not done:
         asteroids.add(asteroid)
         all_sprites.add(asteroid)
 
+    if pygame.sprite.spritecollide(player1, asteroids, True): #if, true, remove the asteroid
+        player1.lives -= 1 #player loses a life
+        if player1.lives <=0: #end the game if no lives left
+            done = True
+
     all_sprites.update()
 
     screen.fill(WHITE)
