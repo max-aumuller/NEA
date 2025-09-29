@@ -4,6 +4,7 @@ from pygame import Vector2
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+RED = (255, 0, 0)
 
 class Asteroid(pygame.sprite.Sprite):
     def __init__(self, width, height, x, y):
@@ -65,6 +66,22 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=self.rect.center)  # Keep center position
         self.direction = Vector2(0, -1).rotate(self.angle)  # Update movement direction
 
+class Bullet(pygame.sprite.Sprite):
+    def __init__(self, pos, direction):
+        super().__init__()
+        self.image = pygame.Surface((5, 5)) #make the square
+        self.image.fill(RED) #make it red
+        self.rect = self.image.get_rect(center=pos)
+        self.pos = Vector2(pos)
+        self.velocity = direction.normalize() * 10 #the bullet will always move in a at a fixed speed
+    
+    def update(self):
+        #move the bullet
+        self.pos += self.velocity
+        self.rect.center = self.pos
+        #kill the bullet if it goes off the screen
+        if (self.rect.right < 0 or self.rect.left > 1280 or self.rect.bottom < 0 or self.rect.top > 900):
+            self.kill()
 
 pygame.init()
 size = (1280, 900)
@@ -72,9 +89,10 @@ screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Asteroids")
 
 asteroids = pygame.sprite.Group()
+bullets = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()
 player1 = Player((320, 240)) #spawn the play at this position
-all_sprites.add(player1)
+all_sprites.add(player1) 
 
 done = False
 clock = pygame.time.Clock()
@@ -95,6 +113,10 @@ while not done:
         player1.rotate(-5)
     if keys[pygame.K_RIGHT]: # rotate right
         player1.rotate(5)
+    if keys[pygame.K_SPACE]:
+        bullet = Bullet(player1.pos, player1.direction) # create a new bullet
+        bullets.add(bullet)
+        all_sprites.add(bullet)
 
     # Spawn asteroids
     if len(asteroids) < 4:
