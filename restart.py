@@ -26,6 +26,25 @@ class Asteroid(pygame.sprite.Sprite):
         elif self.rect.left > 1280 or self.rect.right < 0:
             self.kill()
 
+class Player(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = pygame.image.load("ship.png").convert_alpha() #load in the image used for the ship
+        self.image = pygame.transform.scale(self.image, (50, 50))
+        self.rect = self.image.get_rect()
+        self.xPos = x
+        self.yPos = y
+        self.xSpeed = 0
+        self.ySpeed = 0
+    def update(self):
+        self.xPos += self.xSpeed
+        self.yPos += self.ySpeed
+        self.xSpeed *= 0.98
+        self.ySpeed *= 0.98
+        self.rect.x = self.xPos
+        self.rect.y = self.yPos
+
+
 pygame.init()
 size = (1280, 900)
 screen = pygame.display.set_mode(size)
@@ -33,6 +52,8 @@ pygame.display.set_caption("Asteroids")
 
 asteroids = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()
+player1 = Player(320, 240) #spawn the play at this position
+all_sprites.add(player1)
 
 done = False
 clock = pygame.time.Clock()
@@ -42,6 +63,17 @@ while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
+
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_ESCAPE]: #quit on escape
+        done = True
+    if keys[pygame.K_UP]:  # Accelerate forward
+        player1.ySpeed += 0.2  # Gradually increase speed
+
+    if keys[pygame.K_LEFT]: # rotate left
+        player1.xSpeed -= 0.2
+    if keys[pygame.K_RIGHT]: # rotate right
+        player1.xSpeed += 0.2
 
     # Spawn asteroids
     if len(asteroids) < 4:
@@ -53,7 +85,7 @@ while not done:
 
     screen.fill(WHITE)
     all_sprites.draw(screen)
-    
+
     pygame.display.flip()
     clock.tick(60)
 
