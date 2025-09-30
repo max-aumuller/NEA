@@ -129,6 +129,9 @@ bullets = pygame.sprite.Group()
 # Loop until the user clicks the close button.
 done = False
 
+score = 0
+last_score_time= 0
+
 clock = pygame.time.Clock() #used to controll frame rate
  
 # -------- Main Program Loop -----------
@@ -138,6 +141,11 @@ while not done:
         if event.type == pygame.QUIT:
             done = True
     current_time = pygame.time.get_ticks() # track time for firing cooldown
+
+    #add +1 score every 15 seconds
+    if current_time - last_score_time >= 15000:
+        score += 1
+        last_score_time = current_time
     
     # Handle key input
     keys = pygame.key.get_pressed()
@@ -178,6 +186,7 @@ while not done:
     # destroyes both the bullet and asteroid if they hit, and spawns in 2 meteorites
     asteroid_hits = pygame.sprite.groupcollide(asteroids, bullets, True, True) 
     for asteroid in asteroid_hits:
+        score += 100
         meteor_speed = 3
         x, y = asteroid.rect.center
         meteor1 = Meteor (10, 10, x, y, meteor_speed, -meteor_speed)
@@ -186,12 +195,16 @@ while not done:
         meteors.add(meteor1, meteor2)
     
     meteor_hits = pygame.sprite.groupcollide(bullets, meteors, True, True)
+    for meteor in meteor_hits:
+        score += 50
 
     all_sprites.update()
 
     screen.fill(WHITE)
  
     all_sprites.draw(screen)
+
+    print(score)
 
     pygame.display.flip()
     clock.tick(60) #run at 60 fps
