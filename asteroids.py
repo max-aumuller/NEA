@@ -6,6 +6,7 @@ from pygame import Vector2
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
+GREY = (128, 128, 128)
 
 # Create the asteroid class
 class Asteroid(pygame.sprite.Sprite):
@@ -25,6 +26,26 @@ class Asteroid(pygame.sprite.Sprite):
         self.rect.x += self.x_speed
         self.rect.y += self.y_speed
         #kill the asteroid if it goes off the screen
+        if self.rect.top > 900 or self.rect.bottom < 0:
+            self.kill()
+        elif self.rect.left > 1280 or self.rect.right < 0:
+            self.kill()
+
+# Create the mini asteroid class
+class Meteor(pygame.sprite.Sprite):
+    def __init__(self, width, height, x, y, xSpeed, ySpeed):
+        super().__init__()
+        self.image = pygame.Surface([width, height])
+        self.image.fill(GREY)
+        self . rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.x_speed = xSpeed
+        self.y_speed = ySpeed
+    
+    def update(self):
+        self.rect.x += self.x_speed
+        self.rect.y += self.y_speed
         if self.rect.top > 900 or self.rect.bottom < 0:
             self.kill()
         elif self.rect.left > 1280 or self.rect.right < 0:
@@ -97,6 +118,7 @@ pygame.display.set_caption("Asteroids")
 
 # Create groups
 asteroids = pygame.sprite.Group()
+meteors = pygame.sprite.Group()
 
 all_sprites = pygame.sprite.Group()
 player1 = Player((320, 240)) #spawn the play at this position
@@ -152,6 +174,15 @@ while not done:
     # destroyes both the bullet and asteroid if they hit
     hits = pygame.sprite.groupcollide(asteroids, bullets, True, True)
     
+    for asteroid in hits:
+        meteor_speed = 3
+        x, y = asteroid.rect.center
+
+        meteor1 = Meteor (10, 10, x, y, meteor_speed, -meteor_speed)
+        meteor2 = Meteor (10, 10, x, y, -meteor_speed, meteor_speed)
+        all_sprites.add(meteor1, meteor2)
+        meteors.add(meteor1, meteor2)
+
     screen.fill(WHITE)
  
     all_sprites.draw(screen)
