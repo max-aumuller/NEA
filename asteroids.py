@@ -168,20 +168,26 @@ while not done:
         player1.lives -= 1 #player loses a life
         if player1.lives <=0: #end the game if no lives left
             done = True
-    
-    all_sprites.update()
 
-    # destroyes both the bullet and asteroid if they hit
-    hits = pygame.sprite.groupcollide(asteroids, bullets, True, True)
-    
-    for asteroid in hits:
+    #Collision detection of player and meteorites
+    if pygame.sprite.spritecollide(player1, meteors, True):
+        player1.lives -=1
+        if player1.lives <=0:
+            done = True
+
+    # destroyes both the bullet and asteroid if they hit, and spawns in 2 meteorites
+    asteroid_hits = pygame.sprite.groupcollide(asteroids, bullets, True, True) 
+    for asteroid in asteroid_hits:
         meteor_speed = 3
         x, y = asteroid.rect.center
-
         meteor1 = Meteor (10, 10, x, y, meteor_speed, -meteor_speed)
         meteor2 = Meteor (10, 10, x, y, -meteor_speed, meteor_speed)
         all_sprites.add(meteor1, meteor2)
         meteors.add(meteor1, meteor2)
+    
+    meteor_hits = pygame.sprite.spritecollide(bullets, meteors, True, True)
+
+    all_sprites.update()
 
     screen.fill(WHITE)
  
