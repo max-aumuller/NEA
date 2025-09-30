@@ -185,7 +185,7 @@ while not done:
         all_sprites.add(meteor1, meteor2)
         meteors.add(meteor1, meteor2)
     
-    meteor_hits = pygame.sprite.spritecollide(bullets, meteors, True, True)
+    meteor_hits = pygame.sprite.groupcollide(bullets, meteors, True, True)
 
     all_sprites.update()
 
