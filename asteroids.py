@@ -209,6 +209,9 @@ while not done:
     score_text = font.render(f"score: {score}", True, BLACK)
     screen.blit(score_text, (10, 10))
 
+    lives_text = font.render(f"lives: {player1.lives}", True, BLACK)
+    screen.blit(lives_text, (640, 10))
+
     pygame.display.flip()
     clock.tick(60) #run at 60 fps
 
