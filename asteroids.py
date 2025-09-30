@@ -112,6 +112,7 @@ class Bullet(pygame.sprite.Sprite):
 
 # Set the width and height of the screen [width, height]
 pygame.init()
+font = pygame.font.SysFont(None, 36)
 size = (1280, 900)
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Asteroids")
@@ -204,7 +205,9 @@ while not done:
  
     all_sprites.draw(screen)
 
-    print(score)
+    #draw the score in the screen
+    score_text = font.render(f"score: {score}", True, BLACK)
+    screen.blit(score_text, (10, 10))
 
     pygame.display.flip()
     clock.tick(60) #run at 60 fps
