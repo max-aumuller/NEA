@@ -112,7 +112,7 @@ class Bullet(pygame.sprite.Sprite):
 
 # Set the width and height of the screen [width, height]
 pygame.init()
-font = pygame.font.SysFont(None, 36)
+font = pygame.font.SysFont('ocraextended', 36)
 size = (1280, 900)
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Asteroids")
