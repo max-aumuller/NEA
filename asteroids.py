@@ -26,9 +26,9 @@ class Asteroid(pygame.sprite.Sprite):
         self.rect.x += self.x_speed
         self.rect.y += self.y_speed
         #kill the asteroid if it goes off the screen
-        if self.rect.top > 900 or self.rect.bottom < 0:
+        if self.rect.top > 1100 or self.rect.bottom < -200:
             self.kill()
-        elif self.rect.left > 1280 or self.rect.right < 0:
+        elif self.rect.left > 1480 or self.rect.right < -200:
             self.kill()
 
 # Create the mini asteroid class
@@ -46,9 +46,9 @@ class Meteor(pygame.sprite.Sprite):
     def update(self):
         self.rect.x += self.x_speed
         self.rect.y += self.y_speed
-        if self.rect.top > 900 or self.rect.bottom < 0:
+        if self.rect.top > 1281 or self.rect.bottom < 0:
             self.kill()
-        elif self.rect.left > 1280 or self.rect.right < 0:
+        elif self.rect.left > 900 or self.rect.right < 0:
             self.kill()
 
 # Create player class
@@ -133,7 +133,8 @@ done = False
 score = 0
 last_score_time= 0
 
-max_asteroids = 100
+asteroid_counter = 0
+max_asteroids = 2
 
 clock = pygame.time.Clock() #used to controll frame rate
  
@@ -169,8 +170,18 @@ while not done:
             player1.last_shot_time =  current_time #reset the cooldown timer
 
     # Spawn asteroids
-    if len(asteroids) < 3:
-        asteroid = Asteroid(20, 20, random.randint(0, 1280), random.randint(0, 900))
+    if len(asteroids) < 15:
+        x_spawn = random.randint(1281, 1301)
+        x_choice = random.randint(0,1)
+        if x_choice == 0:
+            x_spawn -= 1301
+        y_spawn = random.randint(901, 921)
+        y_choice = random.randint(0,1)
+        if y_choice == 0:
+            y_spawn -= 921
+
+        print(x_spawn)
+        asteroid = Asteroid(20, 20, x_spawn, y_spawn)
         asteroids.add(asteroid)
         all_sprites.add(asteroid)
     
@@ -178,13 +189,13 @@ while not done:
     if pygame.sprite.spritecollide(player1, asteroids, True): #if, true, remove the asteroid
         player1.lives -= 1 #player loses a life
         if player1.lives <=0: #end the game if no lives left
-            done = True
+            done = False
 
     #Collision detection of player and meteorites
     if pygame.sprite.spritecollide(player1, meteors, True):
         player1.lives -=1
         if player1.lives <=0:
-            done = True
+            done = False
 
     # destroyes both the bullet and asteroid if they hit, and spawns in 2 meteorites
     asteroid_hits = pygame.sprite.groupcollide(asteroids, bullets, True, True) 
@@ -202,19 +213,20 @@ while not done:
         score += 50
 
     all_sprites.update()
-    if current_time % 1000 == 0:
+    """
+    if asteroid_counter % 60 == 0:
         chanceOfSpawn = random.randint(0, 10)
-        print("time")
         if len(asteroids) < max_asteroids:
-            if chanceOfSpawn < 5:
+            if chanceOfSpawn < 8:
                 asteroid = Asteroid(20, 20, random.randint(0, 1280), random.randint(0, 900))
                 asteroids.add(asteroid)
                 all_sprites.add(asteroid)
-                print("happening")
+    """
 
     screen.fill(WHITE)
-    print(current_time)
+
     all_sprites.draw(screen)
+    asteroid_counter += 1
 
     #draw the score in the screen
     score_text = font.render(f"score: {score}", True, BLACK)
