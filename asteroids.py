@@ -133,6 +133,8 @@ done = False
 score = 0
 last_score_time= 0
 
+max_asteroids = 100
+
 clock = pygame.time.Clock() #used to controll frame rate
  
 # -------- Main Program Loop -----------
@@ -167,7 +169,7 @@ while not done:
             player1.last_shot_time =  current_time #reset the cooldown timer
 
     # Spawn asteroids
-    if len(asteroids) < 4:
+    if len(asteroids) < 3:
         asteroid = Asteroid(20, 20, random.randint(0, 1280), random.randint(0, 900))
         asteroids.add(asteroid)
         all_sprites.add(asteroid)
@@ -200,9 +202,18 @@ while not done:
         score += 50
 
     all_sprites.update()
+    if current_time % 1000 == 0:
+        chanceOfSpawn = random.randint(0, 10)
+        print("time")
+        if len(asteroids) < max_asteroids:
+            if chanceOfSpawn < 5:
+                asteroid = Asteroid(20, 20, random.randint(0, 1280), random.randint(0, 900))
+                asteroids.add(asteroid)
+                all_sprites.add(asteroid)
+                print("happening")
 
     screen.fill(WHITE)
- 
+    print(current_time)
     all_sprites.draw(screen)
 
     #draw the score in the screen
