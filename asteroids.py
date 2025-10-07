@@ -171,16 +171,21 @@ while not done:
 
     # Spawn asteroids
     if len(asteroids) < 15:
-        x_spawn = random.randint(1281, 1301)
-        x_choice = random.randint(0,1)
-        if x_choice == 0:
-            x_spawn -= 1301
-        y_spawn = random.randint(901, 921)
-        y_choice = random.randint(0,1)
-        if y_choice == 0:
-            y_spawn -= 921
+        edge = random.choice(["top", "bottom", "left", "right"])
 
-        print(x_spawn)
+        if edge == "top":
+            x_spawn = random.randint(0, 1280)
+            y_spawn = random.randint(-40, -20)
+        elif edge == "bottom":
+            x_spawn = random.randint(0, 1280)
+            y_spawn = random.randint(900, 920)
+        elif edge == "left":
+            x_spawn = random.randint(-40, -20)
+            y_spawn = random.randint(0, 900)
+        else:  # right
+            x_spawn = random.randint(1280, 1300)
+            y_spawn = random.randint(0, 900)
+
         asteroid = Asteroid(20, 20, x_spawn, y_spawn)
         asteroids.add(asteroid)
         all_sprites.add(asteroid)
