@@ -66,12 +66,21 @@ class Player(pygame.sprite.Sprite):
         self.last_shot_time = 0 # time since a bullet was last fired
         self.shot_cooldown = 250 #how long has to pass before firing another bullet
         self.lives = 3 #the player's lives
+        self.engine_temp = 0
+        self.engine_overheat = False
 
     def update(self):
         # Move the player in the direction it is facing
         self.pos += self.direction * self.speed
         self.rect.center = self.pos  # Keep rect updated so it matches Vector2
-
+        
+        if self.engine_temp >0:
+            self.engine_temp -= (1/60)
+        if self.engine_temp >= 5:
+            self.engine_overheat = True
+        if self.engine_temp <= 0:
+            self.engine_overheat = False
+            
         # Apply friction
         self.speed *= 0.98
 
@@ -134,7 +143,7 @@ score = 0
 last_score_time= 0
 
 asteroid_counter = 0
-max_asteroids = 2
+max_asteroids = 10
 
 clock = pygame.time.Clock() #used to controll frame rate
  
@@ -155,8 +164,10 @@ while not done:
     keys = pygame.key.get_pressed()
     if keys[pygame.K_ESCAPE]: #quit on escape
         done = True
-    if keys[pygame.K_UP]:  # Accelerate forward
+    if keys[pygame.K_UP] and not player1.engine_overheat:  # Accelerate forward
         player1.speed += 0.2  # Gradually increase speed
+        player1.engine_temp += (1/30)
+    print(player1.engine_temp)
 
     if keys[pygame.K_LEFT]: # rotate left
         player1.rotate(-5)
@@ -200,7 +211,7 @@ while not done:
     if pygame.sprite.spritecollide(player1, meteors, True):
         player1.lives -=1
         if player1.lives <=0:
-            done = False
+            done = True
 
     # destroyes both the bullet and asteroid if they hit, and spawns in 2 meteorites
     asteroid_hits = pygame.sprite.groupcollide(asteroids, bullets, True, True) 
@@ -218,15 +229,30 @@ while not done:
         score += 50
 
     all_sprites.update()
-    """
+
     if asteroid_counter % 60 == 0:
         chanceOfSpawn = random.randint(0, 10)
         if len(asteroids) < max_asteroids:
             if chanceOfSpawn < 8:
-                asteroid = Asteroid(20, 20, random.randint(0, 1280), random.randint(0, 900))
+                edge = random.choice(["top", "bottom", "left", "right"])
+
+                if edge == "top":
+                    x_spawn = random.randint(0, 1280)
+                    y_spawn = random.randint(-40, -20)
+                elif edge == "bottom":
+                    x_spawn = random.randint(0, 1280)
+                    y_spawn = random.randint(900, 920)
+                elif edge == "left":
+                    x_spawn = random.randint(-40, -20)
+                    y_spawn = random.randint(0, 900)
+                else:  # right
+                    x_spawn = random.randint(1280, 1300)
+                    y_spawn = random.randint(0, 900)
+
+                asteroid = Asteroid(20, 20, x_spawn, y_spawn)
                 asteroids.add(asteroid)
                 all_sprites.add(asteroid)
-    """
+
 
     screen.fill(WHITE)
 
