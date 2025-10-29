@@ -80,7 +80,9 @@ class Player(pygame.sprite.Sprite):
             self.engine_overheat = True
         if self.engine_temp <= 0:
             self.engine_overheat = False
-            
+        if self.engine_temp < 0:
+            self.engine_temp = 0
+         
         # Apply friction
         self.speed *= 0.98
 
